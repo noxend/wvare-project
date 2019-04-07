@@ -1,0 +1,131 @@
+
+.profile-header {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  /* height: 460px; */
+  background-color: white;
+  animation: user-profile-in .3s linear;
+  box-shadow: 0 0.46875rem 2.1875rem rgba(8, 10, 37, 0.03),
+    0 0.9375rem 1.40625rem rgba(8, 10, 37, 0.03),
+    0 0.25rem 0.53125rem rgba(8, 10, 37, 0.05),
+    0 0.125rem 0.1875rem rgba(8, 10, 37, 0.03);
+  border-radius: 0.25rem;
+}
+
+@keyframes user-profile-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+.profile-header__background {
+  position: relative;
+  height: 340px;
+  width: 100%;
+  background-position: center;
+  background-size: cover;
+}
+
+.profile-header__name-nickname-status {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-left: 14px;
+}
+
+.profile-header__user-data {
+  display: flex;
+}
+
+.profile-header__bottom {
+  padding: 34px;
+}
+
+.profile-header__user-data img {
+  margin-top: -113px;
+  /* transform: translateY(-50px); */
+  border-radius: 50%;
+  width: 158px;
+  height: 158px;
+  border: 5px solid white;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header__fullname {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.profile-header__status {
+  color: #888888;
+}
+
+.profile-header__rigth-side {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.profile-header__rigth-side {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.profile-header__rigth-side button:not(:last-child) {
+  margin-right: 14px;
+}
+
+
+.profile-header__image-upload {
+  right: 1rem;
+  top: 1rem;
+  position: absolute;
+  cursor: pointer;
+  align-self: flex-end;
+  height: 100px;
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  transition: .2s linear;
+  opacity: 0;
+}
+
+.profile-header__background:hover .profile-header__image-upload {
+  opacity: 1;
+}
+
+.profile-header__image-upload input[type=file] {
+  display: none;
+}
+
+.profile-header__image-upload i {
+  font-weight: bold;
+  font-size: 2.5rem;
+  opacity: .6;
+  transition: .2s linear;
+}
+
+.profile-header__image-upload:hover {
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.profile-header__image-upload:active {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.profile-header__image-upload:hover i {
+  opacity: .7;
+}

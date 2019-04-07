@@ -1,0 +1,60 @@
+@import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css';
+
+.w-checkbox {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  user-select: none;
+}
+
+.w-checkbox label { 
+  margin: 0;
+  font-size: .875rem;
+  color: rgba(0, 0, 0, 0.5);
+  line-height: normal;
+  /* font-weight: 500 */
+}
+
+.w-checkbox input[type="checkbox"] {
+  display: none;
+}
+
+.w-checkbox span{
+  margin-right: 6px;
+  width: 15px;
+  height: 15px;
+  border-radius: 3px;
+  border: 1px solid rgb(199, 199, 199);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.2s ease-in-out;
+}
+
+.w-checkbox input[type="checkbox"]:checked + span {
+  background-color: rgb(84, 93, 216);
+  border: none;
+}
+
+.w-checkbox input[type="checkbox"] + span:before {
+  font-family: "FontAwesome";
+  font-size: 10px;
+  color: white;
+  content: "";
+}
+
+.w-checkbox input[type="checkbox"]:checked + span:before {
+  animation: check-anim-in 200ms ease-out;
+  content: "\f00c";
+}
+
+@keyframes check-anim-in {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}

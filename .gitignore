@@ -1,0 +1,11 @@
+node_modules
+design
+.env
+.vscode
+.idea
+
+public/uploads/images/posts
+public/uploads/images/users
+
+client/node_modules
+package-lock.json
