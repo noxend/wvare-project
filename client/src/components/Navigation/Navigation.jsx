@@ -2,21 +2,20 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import UserWidget from '../UserWidget';
-
+import UserThumbnail from '../UserThumbnail';
+ 
 import { Link } from 'react-router-dom';
 
 import logo from './wvare.png';
 import './Navigation.css';
 
 class Navigation extends Component {
- 
   timer = null;
   element = null;
 
   state = {
     isOpen: false
   };
-
 
   openUserWidget = () => {
     this.setState({ isOpen: true }, () => {
@@ -25,7 +24,6 @@ class Navigation extends Component {
   };
 
   closeUserWidget = () => {
-
     const { isAuthenticated } = this.props.authReducer;
 
     if (this.state.isOpen && isAuthenticated) {
@@ -44,13 +42,17 @@ class Navigation extends Component {
   }
 
   render() {
-
     const { isOpen } = this.state;
 
-    const userWidget = isOpen ? <UserWidget /> : null;
+    const {
+      isAuthenticated,
+      user: { login, color }
+    } = this.props.authReducer;
 
-    const { isAuthenticated, user: { login } } = this.props.authReducer;
-    
+    const userWidget = isOpen ? <UserWidget color={color} /> : null;
+
+    const image = false;
+
     return (
       <nav className="navigation">
         <div className="container">
@@ -75,13 +77,18 @@ class Navigation extends Component {
                   <div className="navigation__user-widget">
                     <div
                       className="navigation__nav-icon"
-                      onClick={this.openUserWidget}>
+                      onClick={this.openUserWidget}
+                    >
                       <div className="navigation__user-image">
-                        <img
-                          src="https://avatars2.githubusercontent.com/u/35522827?s=460&v=4"
-                          alt="user_image"
-                          height="42"
-                        />
+                        {image ? (
+                          <img
+                            src={image}
+                            alt="user_image"
+                            height="42"
+                          />
+                        ) : (
+                          <UserThumbnail later={`${login[0]}`} size='42px' fontSize='1.5rem' color={color}/>
+                        )}
                       </div>
                       <i
                         className={`fas fa-angle-down ml-1 ${

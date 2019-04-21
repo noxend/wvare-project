@@ -1,0 +1,128 @@
+.body-profile__post {
+  padding: 1rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  /* height: 460px; */
+  background-color: white;
+  box-shadow: 0 0.46875rem 2.1875rem rgba(8, 10, 37, 0.03),
+    0 0.9375rem 1.40625rem rgba(8, 10, 37, 0.03),
+    0 0.25rem 0.53125rem rgba(8, 10, 37, 0.05),
+    0 0.125rem 0.1875rem rgba(8, 10, 37, 0.03);
+  border-radius: 0.25rem;
+  margin-bottom: 24px;
+}
+
+.body-profile__header-post {
+  display: flex;
+}
+
+.body-profile__image-wrapper {
+  overflow: hidden;
+  width: 49px;
+  height: 49px;
+  border-radius: 50%;
+  margin-right: 14px;
+}
+
+.body-profile__image-wrapper img {
+  width: 100%;
+  height: 100%;
+}
+
+.body-profile__body-post {
+  margin: 24px 0;
+}
+
+.body-profile__bottom-post {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid #e6ecf5;
+  padding-top: 14px;
+}
+
+.body-profile__statistics {
+  display: flex;
+  justify-content: space-between;
+}
+
+.post__left-side {
+  display: flex;
+  align-items: center;
+}
+
+.body-profile__post-date {
+  font-size: .875rem;
+  line-height: normal;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.body-profile__body-post {
+  font-size: .875rem;
+}
+
+.body-profile__post-author {
+  font-weight: 500;
+  line-height: normal;
+}
+
+.post__like,
+.post__retweet,
+.post__comments {
+  border-radius: 50%;
+  font-size: 20px;
+  height: 38px;
+  width: 38px;
+  color: #616161;
+  outline: none;
+  border: none;
+  background-color: transparent;
+  transition: 0.1s;
+}
+
+.post__like:hover,
+.post__retweet:hover,
+.post__comments:hover {
+  background-color: rgba(0, 0, 0, 0.025);
+}
+
+.post__like:active,
+.post__retweet:active,
+.post__comments:active {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.post__like:focus,
+.post__retweet:focus,
+.post__comments:focus {
+  outline: none;
+}
+
+.post__likes_friends {
+  margin-left: 14px;
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.post__likes_friends li:not(:first-child) {
+  margin-left: -8px;
+}
+
+.post__likes_friends li {
+  border: 2px solid #fff;
+  overflow: hidden;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+}
+
+.post__likes_friends li img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #fff;
+}

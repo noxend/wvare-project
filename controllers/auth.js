@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
 const errorHendler = require('../utils/errorHendler');
 const { registerValidator } = require('../validation/auth');
+const getRandomColor = require('../utils/randomColor');
 
 const UserSchema = require('../models/User');
 
@@ -14,25 +15,25 @@ const loginContoller = async (req, res) => {
 
   if (checkUser) {
     const passwordResult = await bcrypt.compare(password, checkUser.hashPass);
-    // TODO:  adfds
-    // FIXME: wef 
     if (passwordResult) {
       const token = jwt.sign({
         login: checkUser.login,
         userId: checkUser._id,
-        role: checkUser.role
+        role: checkUser.role,
+        color: checkUser.color
       }, keys.jwt, { expiresIn: 60 * 60 });
 
       res.status(200).json({token: `Bearer ${token}` });
     } else {
-      res.status(401).json({ msg: 'Wrong password' });
+      res.status(401).json({ msg: 'Some problem with the password' });
     }
   } else {
-    res.status(401).json({ msg: 'User not found' });
+    res.status(404).json({ msg: 'User not found' });
   }
 }
 
 const registerContoller = async (req, res) => {
+
   const { errors, isOk } = registerValidator(req.body);
 
   if (!isOk) return res.status(409).json({ errors });
@@ -47,6 +48,7 @@ const registerContoller = async (req, res) => {
   } else if (checkEmail) {
     return res.status(409).json({ msg: 'Користувач з таким емейлом вже існує!' });
   } else {
+    
     const salt = await bcrypt.genSalt(10);
     const { length: countDocuments } = await UserSchema.find();
 
@@ -54,7 +56,8 @@ const registerContoller = async (req, res) => {
       login: login,
       email: email,
       hashPass: bcrypt.hashSync(password, salt),
-      role: (countDocuments === 0) ? 'ADMIN' : 'USER'
+      role: (countDocuments === 0) ? 'ADMIN' : 'USER',
+      color: getRandomColor()
     });
 
     try {

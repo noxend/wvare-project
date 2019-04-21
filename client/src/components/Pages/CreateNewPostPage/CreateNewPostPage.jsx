@@ -1,12 +1,14 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import { PostService } from '../../../services';
+import { notifyManager } from '../../NotifyManager';
 
 import './CreateNewPostPage.css';
 
 import Spinner from '../../Spinner';
 
-export default class CreateNewPostPage extends Component {
+class CreateNewPostPage extends Component {
   postService = new PostService();
 
   state = {
@@ -43,7 +45,7 @@ export default class CreateNewPostPage extends Component {
       id: this.state.postid,
       title: this.state.title,
       text: this.state.text,
-      headerImageData: this.state.headerImageData
+      headerImageData: this.state.headerImageData,
     };
 
     console.log(data);
@@ -52,6 +54,7 @@ export default class CreateNewPostPage extends Component {
       .create(data)
       .then(({ data }) => {
         this.setState({ status: data.status });
+        notifyManager.success({title: 'success', message: 'The article was published'});
       })
       .catch(err => console.log(err));
   };
@@ -80,7 +83,7 @@ export default class CreateNewPostPage extends Component {
   };
 
   removePost = e => {
-    // TODO
+    // TODO:
   };
 
   componentDidMount = () => {
@@ -212,3 +215,9 @@ export default class CreateNewPostPage extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return state;
+};
+
+export default connect(mapStateToProps)(CreateNewPostPage);

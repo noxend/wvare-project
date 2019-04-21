@@ -1,0 +1,142 @@
+.notification {
+  overflow: hidden;
+  margin: 0 0 26px 40px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border-radius: 0.25rem;
+  background-color: #db3737;
+  color: white;
+  max-width: 500px;
+  min-width: 300px;
+  z-index: 20;
+  animation: notification-amin-in 0.3s ease-in-out;
+  box-shadow: 0 0 0 1px rgba(16, 22, 26, 0.1), 0 4px 8px rgba(16, 22, 26, 0.2),
+    0 18px 46px 6px rgba(16, 22, 26, 0.2);
+}
+
+.notification__description {
+  flex-grow: 1;
+}
+
+.notification__body {
+  padding: 16px 24px;
+  display: flex;
+}
+
+.notification__title {
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.notification__text {
+  font-size: .875rem;
+}
+
+.notification--close {
+  animation: notification-amin-out 0.2s linear;
+  opacity: 0;
+  /* transform: translateX(-150px); */
+}
+
+@keyframes notification-amin-in {
+  from {
+    opacity: 0;
+    transform: translateX(-150px) scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0px) scale(1);
+  }
+}
+
+@keyframes notification-amin-out {
+  from {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    filter: blur(20px);
+    transform: scale(1.1);
+  }
+}
+
+.notification-info {
+  background-color: #0097A7;
+}
+
+.notification-success {
+  background-color: #689F38;
+}
+
+.notification-warning {
+  background-color: #FFA000;
+  color: black;
+}
+
+.notification-danger {
+  background-color: #d32f2f;
+}
+
+.notification-custom {
+  background-color: white;
+  color: black;
+}
+
+.notification-custom .close-notification {
+  color: black;
+}
+
+.notification-custom .notification__progres-bar {
+  background-image: linear-gradient(to right, red, yellow, green); 
+}
+
+.notification-warning .close-notification {
+  color: black;
+}
+
+.notification span {
+  font-size: 0.875rem;
+  flex-grow: 1;
+}
+
+.notification .icon {
+  margin-right: 24px;
+  margin-top: 4px;
+  font-size: 24px;
+  flex-grow: 0;
+}
+
+.notification-container {
+  display: flex;
+  align-items: flex-start;
+  bottom: 0;
+  position: fixed;
+  flex-direction: column;
+}
+
+.close-notification {
+  flex-grow: 0;
+  cursor: pointer;
+  margin-left: 24px;
+  height: 30px;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 5px 10px;
+  border: none;
+  background: none;
+  border-radius: 0.25rem;
+  transition: 0.2s;
+}
+
+.close-notification:hover {
+  background-color: hsla(0, 0%, 100%, 0.15);
+}
+
+.notification__progres-bar {
+  width: 100%;
+  bottom: 0;
+  height: 5px;
+  background-color: rgba(0, 0, 0, 0.3);
+}

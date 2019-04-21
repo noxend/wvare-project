@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
+import validator from 'validator';
 
 import { connect } from 'react-redux';
 import { loginUser } from '../../../actions/auth';
 
-import JWTDecode from 'jwt-decode';
-
 import WCheckbox from '../../w-checkbox';
-import ApiService from '../../../services/api.service';
+import { notifyManager } from '../../NotifyManager';
+
+import { AuthService } from '../../../services';
 
 import { Redirect } from 'react-router-dom';
 
@@ -14,30 +15,96 @@ import './LoginPage.css';
 
 class LoginPage extends Component {
   state = {
-    data: {}
+    data: {},
+    username: '',
+    password: '',
+    usernameError: '',
+    passwordError: '',
+    wrongUserData: false,
+    loading: false
   };
 
-  apiService = new ApiService();
+  authService = new AuthService();
 
-  submitFormHandler = e => {
+  handleChange = e => {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  };
+
+  validate = () => {
+    const { username, password } = this.state;
+
+    this.setState({
+      usernameError: '',
+      passwordError: '',
+      wrongUserData: false
+    });
+
+    // username
+    if (validator.isEmpty(username)) {
+      this.setState({ usernameError: 'Field is empty!' });
+      notifyManager.danger({
+        title: 'username field',
+        message: 'Field is empty!'
+      });
+    }
+
+    if (!validator.isAlpha(username, 'en-US') && !validator.isEmpty(username)) {
+      this.setState({ usernameError: 'Only latin laters!' });
+      notifyManager.warning({
+        title: 'username field',
+        message: 'Only latin laters!'
+      });
+    }
+
+    // password
+    if (validator.isEmpty(password)) {
+      this.setState({ passwordError: 'Field is empty!' });
+      notifyManager.danger({
+        title: 'password field',
+        message: 'Field is empty!'
+      });
+    }
+  };
+
+  submitFormHandler = async e => {
     e.preventDefault();
-
-    const password = e.target.password.value;
-    const login = e.target.emailLogin.value;
-
+    await this.validate();
+    const { password, username, usernameError, passwordError } = this.state;
     const { loginUser } = this.props;
 
-    loginUser(login, password);
+    const isOk = usernameError || passwordError ? false : true;
+
+    if (isOk) {
+      this.setState({ loading: true });
+      this.authService
+        .login(username, password)
+        .then(res => {
+          const data = res.data;
+          loginUser(data.token);
+          notifyManager.success({ title: 'success', message: 'Hello!' });
+        })
+        .catch(({ response }) => {
+          this.setState({ wrongUserData: true, loading: false });
+          notifyManager.danger({
+            title: `wrong user data`,
+            message: 'Wrong password or username'
+          });
+        });
+    }
+  };
+ 
+  componentDidMount = () => {
+    document.title = 'Login';
   };
 
-  componentDidMount() {
-    document.title = 'Login';
-  }
-
   render() {
-    if (this.props.isAuthenticated) {
+    if (this.props.authReducer.isAuthenticated) {
       return <Redirect to="/" />;
     }
+
+    const { usernameError, passwordError, wrongUserData, loading } = this.state;
 
     return (
       <div className="container w-container-login-p">
@@ -53,23 +120,60 @@ class LoginPage extends Component {
                     <h4>Sign in to your account</h4>
                   </div>
                   <div className="login-page__body">
-                    <div className="input-form-item">
+                    <div
+                      className={`input-form-item ${
+                        usernameError || wrongUserData ? 'err' : null
+                      }`}
+                    >
                       <label htmlFor="email_login">
                         Your email address or login
                       </label>
-                      <input type="text" id="email_login" name="emailLogin" />
+                      <input
+                        type="text"
+                        id="email_login"
+                        name="username"
+                        onChange={this.handleChange}
+                      />
+                      {usernameError ? (
+                        <label htmlFor="email_login" className="">
+                          {usernameError}
+                        </label>
+                      ) : null}
                     </div>
-                    <div className="input-form-item err">
+                    <div
+                      className={`input-form-item ${
+                        passwordError || wrongUserData ? 'err' : null
+                      }`}
+                    >
                       <label htmlFor="password">Password</label>
-                      <input type="password" id="password" name="password" />
+                      <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        onChange={this.handleChange}
+                      />
+                      {passwordError ? (
+                        <label htmlFor="email_login" className="">
+                          {passwordError}
+                        </label>
+                      ) : null}
+                      {wrongUserData ? (
+                        <label htmlFor="email_login" className="">
+                          Wrong password or username
+                        </label>
+                      ) : null}
                     </div>
                     <div className="login-page__row">
                       <WCheckbox label="Remeber me" />
                       <a href="/">Forgot your password?</a>
                     </div>
                     <div className="input-form-item">
-                      <button type="submit" className="button button-dark-blue">
-                        Sing In
+                      <button
+                        type="submit"
+                        className="w-btn w-btn-dark-blue"
+                        disabled={loading ? true : false}
+                      >
+                        {loading ? 'Please wait...' : 'Log in'}
                       </button>
                     </div>
                   </div>
@@ -91,8 +195,8 @@ class LoginPage extends Component {
   }
 }
 
-const mapStateToProps = ({ isAuthenticated }) => {
-  return { isAuthenticated };
+const mapStateToProps = state => {
+  return state;
 };
 
 export default connect(

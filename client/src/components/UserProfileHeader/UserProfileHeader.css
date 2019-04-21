@@ -6,7 +6,7 @@
   width: 100%;
   /* height: 460px; */
   background-color: white;
-  animation: user-profile-in .3s linear;
+  
   box-shadow: 0 0.46875rem 2.1875rem rgba(8, 10, 37, 0.03),
     0 0.9375rem 1.40625rem rgba(8, 10, 37, 0.03),
     0 0.25rem 0.53125rem rgba(8, 10, 37, 0.05),
@@ -14,24 +14,19 @@
   border-radius: 0.25rem;
 }
 
-@keyframes user-profile-in {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0px);
-  }
-}
+
 
 .profile-header__background {
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 340px;
   width: 100%;
   background-position: center;
   background-size: cover;
 }
+
 
 .profile-header__name-nickname-status {
   display: flex;
@@ -55,6 +50,16 @@
   width: 158px;
   height: 158px;
   border: 5px solid white;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header__user_img {
+  overflow: hidden;
+  border-radius: 50%;
+  width: 158px;
+  height: 158px;
+  border: 5px solid white;
+  box-sizing: content-box;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 
@@ -109,13 +114,16 @@
 
 .profile-header__image-upload input[type=file] {
   display: none;
+  background-color: rgba(0, 0, 0, 0.15);
 }
+
 
 .profile-header__image-upload i {
   font-weight: bold;
   font-size: 2.5rem;
   opacity: .6;
   transition: .2s linear;
+  color: white;
 }
 
 .profile-header__image-upload:hover {

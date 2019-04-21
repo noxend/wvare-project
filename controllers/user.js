@@ -28,7 +28,9 @@ const getUserByUsername = async (req, res) => {
   try {
     const result = await User.findOne({
       login: username
-    }).select({ hashPass: 0 }).populate('profileImageHeader');
+    })
+      .select({ hashPass: 0 })
+      .populate('profileImageHeader')
 
     res.json({ msg: 'ok', result });
   } catch (err) {
@@ -37,7 +39,6 @@ const getUserByUsername = async (req, res) => {
 };
 
 const uploadImageHeader = async (req, res) => {
-
   const { login } = req.user;
   const { path: imagePath, originalname, destination } = req.file;
   const ext = path.extname(originalname);
@@ -45,38 +46,49 @@ const uploadImageHeader = async (req, res) => {
 
   console.log(date);
 
-  const finalPath = path.join('public', 'uploads', 'images', 'users', login, `${date}${ext}`);
+  const finalPath = path.join(
+    'public',
+    'uploads',
+    'images',
+    'users',
+    login,
+    `${date}${ext}`
+  );
 
   const upload = new Upload({
     path: `${login}/${date}${ext}`
   });
 
   try {
-
     await jimp.read(imagePath).then(image => {
-      image.cover(1110, 340).quality(80).write(finalPath);
+      image
+        .cover(1110, 340)
+        .quality(80)
+        .write(finalPath);
     });
 
     await upload.save();
-    
+
     fs.readdir(destination)
-    .then(data => {
-      data.forEach(el => {
-        fs.remove(path.join(destination, el)).catch(err => console.error(err));
-      });
-    })
-    .catch(err => console.error(err));
+      .then(data => {
+        data.forEach(el => {
+          fs.remove(path.join(destination, el)).catch(err =>
+            console.error(err)
+          );
+        });
+      })
+      .catch(err => console.error(err));
 
-    await User.findOneAndUpdate({login}, {
-      profileImageHeader: upload._id
-    })
+    await User.findOneAndUpdate(
+      { login },
+      {
+        profileImageHeader: upload._id
+      }
+    );
 
-    res.json({upload});
-
+    res.json({ upload });
   } catch (err) {
-    
-    res.json({err});
-
+    res.json({ err });
   }
 };
 

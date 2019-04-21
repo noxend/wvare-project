@@ -39,7 +39,7 @@ export default class ItemCard extends Component {
           <div className="item-card__bottom px-3">
             <div>
               <div className="item-card__author">
-                BY <Link to="/">{author}</Link> - 12 HOURS AGO
+                BY <Link to={`/profile/${author}`}>{author}</Link> - 12 HOURS AGO
               </div>
               <div className="item-card__vl" />
               <div className="item-card__comments">

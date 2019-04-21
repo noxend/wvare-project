@@ -1,4 +1,16 @@
 
 .user-profile-page {
   margin-top: 100px;
+  animation: user-profile-in .3s linear;
+}
+
+@keyframes user-profile-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
 }

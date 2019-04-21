@@ -4,8 +4,8 @@ design
 .vscode
 .idea
 
-/public/uploads/images/posts/*
-/public/uploads/images/users/*
+/public/uploads/images/posts
+/public/uploads/images/users
 
 client/node_modules
 package-lock.json

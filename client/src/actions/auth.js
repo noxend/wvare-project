@@ -4,26 +4,26 @@ import jwtDecode from 'jwt-decode';
 
 const service = new WebApiService();
 
-export const setCurrentUser = (payload) => {
+export const setCurrentUser = payload => {
   return {
     type: 'USER_LOGGED',
     payload
   };
 };
 
-export const delCurrentUser = (payload) => {
+export const delCurrentUser = payload => {
   return {
     type: 'USER_LOGGED',
     payload
   };
 };
 
-export const loginUser = (login, password) => dispatch => {
-  service.login(login, password).then(({ data: { token } }) => {
+export const loginUser = (token) => dispatch => {
+  if (token) {
     localStorage.setItem('jwtToken', token);
     setAuthToken(token);
     dispatch(setCurrentUser(jwtDecode(token)));
-  });
+  }
 };
 
 export const logoutUser = () => dispatch => {
@@ -31,4 +31,3 @@ export const logoutUser = () => dispatch => {
   setAuthToken(false);
   dispatch(delCurrentUser({}));
 };
-

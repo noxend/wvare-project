@@ -1,0 +1,51 @@
+.w-line-loader {
+  position: absolute;
+  top: 0;
+  z-index: 999;
+  width: 100%;
+  height: 4px;
+  /* animation: maskAnim 10s infinite; */
+}
+
+.w-line-loader::before {
+  content: '';
+  display: block;
+  height: 4px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.3);
+  position: absolute;
+  left: -100%;
+
+  animation: loaderAnim 2s infinite 1s;
+}
+
+@keyframes loaderAnim {
+  0% {
+    left: -100%;
+  }
+  25%,
+  50% {
+    left: 0;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes maskAnim {
+  0% {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  10% {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  90% {
+    transform: scaleX(1);
+    transform-origin: right;
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}

@@ -1,17 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import './UserProfilePage.css';
-import { UserService } from '../../../services';
+import { UserService, PostService } from '../../../services';
+
 import UserProfileHeader from '../../UserProfileHeader';
+import UserPosts from '../../UserPosts';
+import LineLoader from '../../LineLoader';
 
 class UserProfilePage extends Component {
   userService = new UserService();
+  postService = new PostService();
 
   state = {
     userData: {},
     imageHeaderData: {},
+    posts: [],
     isOwner: false,
-    dataIsLoaded: false
+    isUserDataLoaded: false,
+    isUsersPostsLoaded: false,
   };
 
   uploadHeaderImage = e => {
@@ -21,7 +27,7 @@ class UserProfilePage extends Component {
 
     this.userService
       .uploadHeaderImage(file)
-      .then(({result: { data }}) => {
+      .then(({ result: { data } }) => {
         this.setState({ imageHeaderData: data.upload }, () => {
           console.log('State has been updated');
         });
@@ -29,48 +35,122 @@ class UserProfilePage extends Component {
       .catch(err => console.log(err));
   };
 
-  componentDidMount() {
+  componentDidUpdate = (prevProps) => {
+    const { username: prevUsername } = prevProps.match.params;
+    const { username } = this.props.match.params;
+
+    if (prevUsername !== username) {
+      document.title = `@${username}`;
+      this.getData();
+    }
+  };
+
+  getData = () => {
+    const { username } = this.props.match.params;
+
+    this.setState({
+      isUserDataLoaded: false,
+      isUsersPostsLoaded: false
+    });
+
+    this.postService
+      .getUsersPosts(username)
+      .then(({ data: result }) => {
+
+        this.setState({
+          posts: result.result,
+          isUsersPostsLoaded: true
+        });
+      })
+      .catch(err => console.log(err));
+
+    this.userService
+      .getUserByUsername(username)
+      .then(({ data: { result } }) => {
+        this.setState(
+          {
+            userData: result,
+            imageHeaderData: result.profileImageHeader
+              ? result.profileImageHeader
+              : { path: 'morrison/1d7sfffkp.jpg' },
+            isUserDataLoaded: true
+          },
+          () => {
+            const { login } = this.props.authReducer.user;
+            if (username === login) {
+              this.setState({ isOwner: true });
+            }
+          }
+        );
+      })
+      .catch(err => console.log(err));
+  };
+
+  componentDidMount = async () => {
     const { username } = this.props.match.params;
     document.title = `@${username}`;
-    this.userService
-    .getUserByUsername(username)
-    .then(({ data: { result } }) => {
-      this.setState(
-        {
-          userData: result,
-          imageHeaderData: result.profileImageHeader ? result.profileImageHeader : { path: 'morrison/1d7sfffkp.jpg' },
-          dataIsLoaded: true
-        },
-        () => {
-          const { login } = this.props.authReducer.user;
-          if (username === login) {
-            this.setState({ isOwner: true });
-          }
-        }
-      );
-    })
-    .catch(err => console.log(err));
-  }
+    this.getData();
+  };
 
   render() {
     const {
-      userData: { login },
+      userData: { login, color = '#c62828' },
       isOwner,
       imageHeaderData,
-      dataIsLoaded
+      isUserDataLoaded,
+      isUsersPostsLoaded,
+      posts
     } = this.state;
 
+
+    if(!isUserDataLoaded || !isUsersPostsLoaded) {
+      return <LineLoader />
+    }
+
+
     return (
-      <div className="user-profile-page">
-        {dataIsLoaded ? (
-          <UserProfileHeader
-            username={login}
-            isOwner={isOwner}
-            profileImageHeader={imageHeaderData}
-            uploadHeaderImage={this.uploadHeaderImage}
-          />
+      <React.Fragment>
+        {isUserDataLoaded && isUsersPostsLoaded ? (
+          <div className="user-profile-page">
+            <div className="container">
+              <UserProfileHeader
+                username={login}
+                color={color}
+                isOwner={isOwner}
+                profileImageHeader={imageHeaderData}
+                uploadHeaderImage={this.uploadHeaderImage}
+              />
+            </div>
+            <div className="container">
+              <div className="body-profile" style={{ marginTop: '24px' }}>
+                <div className="row">
+                  <div className="col col-lg-8 col-sm-12">
+                    {posts.map(
+                      ({
+                        _id,
+                        likes,
+                        user: { login, color },
+                        imageHeader: { path }
+                      }) => {
+                        return (
+                          <UserPosts
+                            key={_id}
+                            id={_id}
+                            username={login}
+                            color={color}
+                            imageUrl={path}
+                            likes={likes}
+                          />
+                        );
+                      }
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         ) : null}
-      </div>
+      </React.Fragment>
     );
   }
 }

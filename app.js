@@ -31,6 +31,7 @@ app.use(require('cors')());
 app.use(require('body-parser').urlencoded({ extended: false }));
 app.use(require('body-parser').json());
 
+
 app.use(passport.initialize());
 require('./middleware/passport')(passport);
 

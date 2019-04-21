@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-
 import uuid from 'uuid/v4';
-
 import { connect } from 'react-redux';
-
 import { Link } from 'react-router-dom';
-
 import { logoutUser } from '../../actions/auth';
+import UserThumbnail from '../UserThumbnail';
 import './UserWidget.css';
 
 class UserWidget extends Component {
@@ -19,8 +16,12 @@ class UserWidget extends Component {
   }
 
   render() {
-
-    const { authReducer: { user: { role, login } }, logoutUser } = this.props;
+    const {
+      authReducer: {
+        user: { role, login, color }
+      },
+      logoutUser
+    } = this.props;
 
     const imageWrapper = {
       backgroundImage:
@@ -28,7 +29,7 @@ class UserWidget extends Component {
     };
 
     const dashboard =
-    role === 'ADMIN' ? (
+      role === 'ADMIN' ? (
         <li className="user-widget__item">
           <Link to="/login">
             <i className="fas fa-chart-line" /> Dashboard
@@ -42,9 +43,11 @@ class UserWidget extends Component {
           <div className="user-widget__image-wrapper" style={imageWrapper} />
           <div className="user-widget__gradient" />
           <div className="user-widget__header-content">
-            <img
-              src="https://avatars2.githubusercontent.com/u/35522827?s=460&v=4"
-              alt="user_image"
+            <UserThumbnail
+              later={login[0]}
+              size="88px"
+              fontSize="3rem"
+              color={color}
             />
             <span>Oleksandr Marushchak</span>
             <span>@{login}</span>
@@ -64,8 +67,11 @@ class UserWidget extends Component {
                 Write a new post
               </Link>
             </li>
-            <li>
-              <button onClick={logoutUser}>sasds</button>
+            <li className="user-widget__item">
+              <Link to="/logout">
+                <i className="fas fa-sign-out-alt" />
+                Log out
+              </Link>
             </li>
           </ul>
         </div>
@@ -74,7 +80,7 @@ class UserWidget extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return state;
 };
 
