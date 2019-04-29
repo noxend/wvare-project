@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import UserWidget from '../UserWidget';
 import UserThumbnail from '../UserThumbnail';
- 
+
 import { Link } from 'react-router-dom';
 
 import logo from './wvare.png';
@@ -44,14 +44,19 @@ class Navigation extends Component {
   render() {
     const { isOpen } = this.state;
 
-    const {
-      isAuthenticated,
-      user: { login, color }
-    } = this.props.authReducer;
+    const { isAuthenticated } = this.props.authReducer;
 
-    const userWidget = isOpen ? <UserWidget color={color} /> : null;
+    const { userData, isLoaded } = this.props.userReducer;
 
-    const image = false;
+    const userWidget = isOpen ? (
+      <UserWidget
+        color={userData.color}
+        userImage={userData.imageSrc}
+        username={userData.login}
+        role={userData.role}
+        userHeaderImage={userData.profileImageHeader}
+      />
+    ) : null;
 
     return (
       <nav className="navigation">
@@ -71,7 +76,7 @@ class Navigation extends Component {
                     </li>
                   </ul>
                 </div>
-              ) : (
+              ) : isLoaded ? (
                 <React.Fragment>
                   <div className="navigation__vertical-line" />
                   <div className="navigation__user-widget">
@@ -80,14 +85,22 @@ class Navigation extends Component {
                       onClick={this.openUserWidget}
                     >
                       <div className="navigation__user-image">
-                        {image ? (
+                        {userData.imageSrc ? (
                           <img
-                            src={image}
-                            alt="user_image"
+                            src={`/uploads/images/users/${
+                              userData.imageSrc.path
+                            }`}
+                            alt=""
                             height="42"
+                            width="42"
                           />
                         ) : (
-                          <UserThumbnail later={`${login[0]}`} size='42px' fontSize='1.5rem' color={color}/>
+                          <UserThumbnail
+                            later={`${userData.login[0]}`}
+                            size="42px"
+                            fontSize="1.5rem"
+                            color={userData.color}
+                          />
                         )}
                       </div>
                       <i
@@ -97,13 +110,13 @@ class Navigation extends Component {
                       />
                       <div className="navigation__user-name">
                         <span>Oleksadnr Marushchak</span>
-                        <span>@{login}</span>
+                        <span>@{userData.login}</span>
                       </div>
                     </div>
                     {userWidget}
                   </div>
                 </React.Fragment>
-              )}
+              ) : null}
             </div>
           </div>
         </div>

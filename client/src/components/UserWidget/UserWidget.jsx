@@ -17,15 +17,16 @@ class UserWidget extends Component {
 
   render() {
     const {
-      authReducer: {
-        user: { role, login, color }
-      },
-      logoutUser
+      userImage,
+      color,
+      role,
+      username,
+      userHeaderImage
     } = this.props;
 
     const imageWrapper = {
       backgroundImage:
-        'URL(https://images.wallpaperscraft.ru/image/gory_vid_sverhu_zasnezhennyj_137215_1280x720.jpg)'
+        `URL(${`/uploads/images/users/${userHeaderImage.path}`})`
     };
 
     const dashboard =
@@ -43,21 +44,30 @@ class UserWidget extends Component {
           <div className="user-widget__image-wrapper" style={imageWrapper} />
           <div className="user-widget__gradient" />
           <div className="user-widget__header-content">
-            <UserThumbnail
-              later={login[0]}
-              size="88px"
-              fontSize="3rem"
-              color={color}
-            />
+            {userImage ? (
+              <img
+                src={`/uploads/images/users/${userImage.path}`}
+                alt=""
+                width="88"
+                height="88"
+              />
+            ) : (
+              <UserThumbnail
+                later={username[0]}
+                size="88px"
+                fontSize="3rem"
+                color={color}
+              />
+            )}
             <span>Oleksandr Marushchak</span>
-            <span>@{login}</span>
+            <span>@{username}</span>
           </div>
         </div>
         <div className="user-widget__body">
           <ul>
             {dashboard}
             <li className="user-widget__item">
-              <Link to={`/profile/${login}`}>
+              <Link to={`/profile/${username}`}>
                 <i className="fas fa-user" /> Profile
               </Link>
             </li>

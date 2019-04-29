@@ -21,7 +21,8 @@ const userSchema = new Schema(
       type: String
     },
     imageSrc: {
-      type: String
+      type: Schema.Types.ObjectId,
+      ref: 'uploads'
     },
     hashPass: {
       type: String,

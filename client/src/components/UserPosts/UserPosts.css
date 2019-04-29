@@ -119,10 +119,3 @@
   height: 26px;
 }
 
-.post__likes_friends li img {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 2px solid #fff;
-}

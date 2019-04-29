@@ -22,7 +22,7 @@ class UserPosts extends Component {
       countLikes: this.props.likes.length,
       whoLiked: this.props.likes
     });
-    this.props.likes.forEach(({_id}) => {
+    this.props.likes.forEach(({ _id }) => {
       if (_id === userId) {
         this.setState({
           isLike: true,
@@ -39,8 +39,6 @@ class UserPosts extends Component {
     this.postService
       .putLike(postId, userId)
       .then(({ data }) => {
-        console.log(data.whoLiked);
-
         this.setState({
           whoLiked: data.whoLiked,
           isLike: !this.state.isLike,
@@ -51,20 +49,16 @@ class UserPosts extends Component {
   };
 
   render() {
-    const authorImage = false;
-
     const { isLike, countLikes, whoLiked } = this.state;
     const { username, color, imageUrl } = this.props;
+    const { imageSrc: authorImage } = this.props.owner;
 
     return (
       <div className="body-profile__post">
         <div className="body-profile__header-post">
           <div className="body-profile__image-wrapper">
             {authorImage ? (
-              <img
-                src="https://avatars2.githubusercontent.com/u/35522827?s=460&v=4"
-                alt=""
-              />
+              <img src={`/uploads/images/users/${authorImage.path}`} alt="" />
             ) : (
               <UserThumbnail
                 size="100%"
@@ -107,22 +101,26 @@ class UserPosts extends Component {
               </button>
               {countLikes === 0 ? null : countLikes}
               <ul className="post__likes_friends">
-                {whoLiked.map(({ _id, color, login }) => {
+                {whoLiked.map(({ _id, color, login, imageSrc }) => {
                   return (
                     <li key={_id}>
                       <Link to={`/profile/${login}`}>
-                        <UserThumbnail
-                          size="100%"
-                          later={login[0]}
-                          color={color}
-                          fontSize=".7rem"
-                        />
+                        {imageSrc ? (
+                          <img
+                            src={`/uploads/images/users/${imageSrc.path}`}
+                            width="26px"
+                            height="26px"
+                            alt=""
+                          />
+                        ) : (
+                          <UserThumbnail
+                            size="100%"
+                            later={login[0]}
+                            color={color}
+                            fontSize=".7rem"
+                          />
+                        )}
                       </Link>
-                      {/* <img
-                        src="https://avatars2.githubusercontent.com/u/37975357?s=460&v=4"
-                        width="24"
-                        alt=""
-                      /> */}
                     </li>
                   );
                 })}

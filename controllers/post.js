@@ -50,11 +50,17 @@ const putLike = async (req, res) => {
 
   if (isLike.length !== 1) {
     await Post.findByIdAndUpdate(id, { $push: { likes: userId } });
-    const result = await Post.findById(id).populate('likes');
+    const result = await Post.findById(id).populate({
+      path: 'likes',
+      populate: { path: 'imageSrc' }
+    });
     res.json({ whoLiked: result.likes });
   } else {
     await Post.findByIdAndUpdate(id, { $pull: { likes: userId } });
-    const result = await Post.findById(id).populate('likes');
+    const result = await Post.findById(id).populate({
+      path: 'likes',
+      populate: { path: 'imageSrc' }
+    });
     res.json({ whoLiked: result.likes });
   }
 };
@@ -66,8 +72,14 @@ const getUsersPosts = async (req, res) => {
     const { _id } = await User.findOne({ login: username });
     const result = await Post.find({ user: _id, status: 'published' })
       .populate('imageHeader')
-      .populate('user')
-      .populate('likes')
+      .populate({
+        path: 'user',
+        populate: { path: 'imageSrc' }
+      })
+      .populate({
+        path: 'likes',
+        populate: { path: 'imageSrc' }
+      })
       .sort({ createdAt: -1 });
 
     res.json({ result });

@@ -8,12 +8,15 @@ import WCheckbox from '../../w-checkbox';
 import { notifyManager } from '../../NotifyManager';
 
 import { AuthService } from '../../../services';
-
+import { UserService } from '../../../services';
+import { setUserData } from '../../../actions/user.action';
 import { Redirect } from 'react-router-dom';
 
 import './LoginPage.css';
 
 class LoginPage extends Component {
+  userService = new UserService();
+
   state = {
     data: {},
     username: '',
@@ -83,6 +86,7 @@ class LoginPage extends Component {
         .then(res => {
           const data = res.data;
           loginUser(data.token);
+          this.getUserData();
           notifyManager.success({ title: 'success', message: 'Hello!' });
         })
         .catch(({ response }) => {
@@ -94,7 +98,17 @@ class LoginPage extends Component {
         });
     }
   };
- 
+
+  getUserData = () => {
+    const { authReducer } = this.props;
+    const { setUserData } = this.props;
+    this.userService.getUserById(authReducer.user.userId).then(({ data }) => {
+      setUserData({
+        userData: data.result
+      });
+    });
+  };
+
   componentDidMount = () => {
     document.title = 'Login';
   };
@@ -201,5 +215,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { loginUser }
+  { loginUser, setUserData }
 )(LoginPage);

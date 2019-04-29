@@ -16,7 +16,10 @@ const getAll = (req, res) => {
 const getById = async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await User.findById(id).select({ hashPass: 0 });
+    const result = await User.findById(id)
+      .select({ hashPass: 0 })
+      .populate('imageSrc')
+      .populate('profileImageHeader');
     res.json({ msg: 'ok', result });
   } catch (err) {
     res.json({ msg: 'error', err });
@@ -31,10 +34,67 @@ const getUserByUsername = async (req, res) => {
     })
       .select({ hashPass: 0 })
       .populate('profileImageHeader')
+      .populate('imageSrc');
 
     res.json({ msg: 'ok', result });
   } catch (err) {
     res.json({ msg: 'error', err });
+  }
+};
+
+const uploadUserImage = async (req, res) => {
+  const { login } = req.user;
+  const { path: imagePath, originalname, destination } = req.file;
+  const ext = path.extname(originalname);
+  const num = Math.floor(Math.random() * 100);
+  const randomString = Math.floor(Date.now() / num + num).toString(32);
+  const id = `t${Date.now().toString(32)}_${randomString}`;
+
+  const finalPath = path.join(
+    'public',
+    'uploads',
+    'images',
+    'users',
+    login,
+    `${id}_640${ext}`
+  );
+
+  const upload = new Upload({
+    path: `${login}/${id}_640${ext}`
+  });
+
+  try {
+    await jimp.read(imagePath).then(image => {
+      image
+        .cover(640, 640)
+        .quality(80)
+        .write(finalPath);
+    });
+
+    await upload.save();
+
+    fs.readdir(destination)
+      .then(data => {
+        data.forEach(el => {
+          fs.remove(path.join(destination, el)).catch(err => {
+            throw new Error(err);
+          });
+        });
+      })
+      .catch(err => {
+        throw new Error(err);
+      });
+
+    await User.findOneAndUpdate(
+      { login },
+      {
+        imageSrc: upload._id
+      }
+    );
+
+    res.json({ upload });
+  } catch (err) {
+    res.json({ err });
   }
 };
 
@@ -43,8 +103,6 @@ const uploadImageHeader = async (req, res) => {
   const { path: imagePath, originalname, destination } = req.file;
   const ext = path.extname(originalname);
   const date = Date.now().toString(32);
-
-  console.log(date);
 
   const finalPath = path.join(
     'public',
@@ -107,5 +165,6 @@ module.exports = {
   remove,
   update,
   getUserByUsername,
-  uploadImageHeader
+  uploadImageHeader,
+  uploadUserImage
 };

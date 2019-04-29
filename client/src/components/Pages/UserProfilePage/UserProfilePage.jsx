@@ -14,10 +14,26 @@ class UserProfilePage extends Component {
   state = {
     userData: {},
     imageHeaderData: {},
+    userImage: {},
     posts: [],
     isOwner: false,
     isUserDataLoaded: false,
-    isUsersPostsLoaded: false,
+    isUsersPostsLoaded: false
+  };
+
+  uploadUserImage = e => {
+    const file = new FormData();
+    file.append('file', e.target.files[0]);
+    e.target.value = null;
+
+    this.userService
+      .uploadUserImage(file)
+      .then(({ data }) => {
+        this.setState({ userImage: data.upload });
+      })
+      .catch(err => {
+        throw new Error(err);
+      });
   };
 
   uploadHeaderImage = e => {
@@ -35,7 +51,7 @@ class UserProfilePage extends Component {
       .catch(err => console.log(err));
   };
 
-  componentDidUpdate = (prevProps) => {
+  componentDidUpdate = prevProps => {
     const { username: prevUsername } = prevProps.match.params;
     const { username } = this.props.match.params;
 
@@ -45,10 +61,10 @@ class UserProfilePage extends Component {
     }
   };
 
-  getData = () => {
+  getData = async () => {
     const { username } = this.props.match.params;
 
-    this.setState({
+    await this.setState({
       isUserDataLoaded: false,
       isUsersPostsLoaded: false
     });
@@ -56,13 +72,14 @@ class UserProfilePage extends Component {
     this.postService
       .getUsersPosts(username)
       .then(({ data: result }) => {
-
         this.setState({
           posts: result.result,
           isUsersPostsLoaded: true
         });
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        throw new Error(err);
+      });
 
     this.userService
       .getUserByUsername(username)
@@ -70,6 +87,7 @@ class UserProfilePage extends Component {
         this.setState(
           {
             userData: result,
+            userImage: result.imageSrc || undefined,
             imageHeaderData: result.profileImageHeader
               ? result.profileImageHeader
               : { path: 'morrison/1d7sfffkp.jpg' },
@@ -83,7 +101,9 @@ class UserProfilePage extends Component {
           }
         );
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        throw new Error(err);
+      });
   };
 
   componentDidMount = async () => {
@@ -99,14 +119,13 @@ class UserProfilePage extends Component {
       imageHeaderData,
       isUserDataLoaded,
       isUsersPostsLoaded,
-      posts
+      posts,
+      userImage
     } = this.state;
 
-
-    if(!isUserDataLoaded || !isUsersPostsLoaded) {
-      return <LineLoader />
+    if (!isUserDataLoaded || !isUsersPostsLoaded) {
+      return <LineLoader />;
     }
-
 
     return (
       <React.Fragment>
@@ -119,6 +138,8 @@ class UserProfilePage extends Component {
                 isOwner={isOwner}
                 profileImageHeader={imageHeaderData}
                 uploadHeaderImage={this.uploadHeaderImage}
+                uploadUserImage={this.uploadUserImage}
+                userImage={userImage}
               />
             </div>
             <div className="container">
@@ -130,7 +151,8 @@ class UserProfilePage extends Component {
                         _id,
                         likes,
                         user: { login, color },
-                        imageHeader: { path }
+                        imageHeader: { path },
+                        user
                       }) => {
                         return (
                           <UserPosts
@@ -140,6 +162,7 @@ class UserProfilePage extends Component {
                             color={color}
                             imageUrl={path}
                             likes={likes}
+                            owner={user}
                           />
                         );
                       }

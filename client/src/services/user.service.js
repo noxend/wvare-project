@@ -22,4 +22,9 @@ export default class UserService {
     return {result, progress};
   }
 
+  uploadUserImage = async (data) => {
+    const result = await axios.post('/api/user/upload-user-image', data);
+    return result;
+  }
+
 }

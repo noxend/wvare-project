@@ -1,13 +1,14 @@
 
 const initialState = {
-  userData: {}
+  userData: {},
+  isLoaded: false
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'SET_USER_DATA':
       return {
-        ...state,
+        isLoaded: true,
         userData: action.payload
       };
 

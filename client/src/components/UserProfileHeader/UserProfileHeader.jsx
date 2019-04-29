@@ -10,14 +10,16 @@ class UserProfileHeader extends Component {
   state = {
     isHeaderImageLoading: false
   };
+
   render() {
-    
     const {
       username,
       isOwner,
+      uploadUserImage,
       uploadHeaderImage,
       profileImageHeader: { path },
-      color
+      color,
+      userImage
     } = this.props;
 
     const changeImageHeader = isOwner ? (
@@ -44,18 +46,36 @@ class UserProfileHeader extends Component {
           style={{ backgroundImage: `url(/uploads/images/users/${path})` }}
         >
           <div className="profile-header__user_img">
-            <UserThumbnail
-              later={username[0]}
-              size="100%"
-              fontSize="5rem"
-              color={color}
-            />
+            <label htmlFor="userImage">
+              <i className="fas fa-cloud-download-alt" />
+              <input
+                type="file"
+                name="file"
+                id="userImage"
+                onChange={uploadUserImage}
+              />
+            </label>
+            {userImage ? (
+              <img
+                src={`/uploads/images/users/${userImage.path}`}
+                alt=""
+                width="100%"
+                height="100%"
+              />
+            ) : (
+              <UserThumbnail
+                later={username[0]}
+                size="100%"
+                fontSize="5rem"
+                color={color}
+              />
+            )}
           </div>
           {changeImageHeader}
         </div>
         <div className="profile-header__bottom">
           <div className="row">
-            <div className="col col-lg-8 col-sm-12">
+            <div className="col col-lg-8 col-md-12">
               <div className="profile-header__user-data">
                 <div className="profile-header__name-nickname-status">
                   <div className="profile-header__name-nickname">
@@ -70,7 +90,7 @@ class UserProfileHeader extends Component {
                 </div>
               </div>
             </div>
-            <div className="col col-lg-4 col-sm-12">
+            <div className="col col-lg-4 col-md-12">
               <div className="profile-header__rigth-side">
                 <button className="w-btn w-btn-green">
                   <i className="fas fa-user" /> Follow

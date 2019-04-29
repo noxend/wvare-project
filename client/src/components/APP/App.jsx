@@ -10,6 +10,8 @@ import PostsPage from '../Pages/PostsPage';
 import LoginPage from '../Pages/LoginPage';
 import UserProfilePage from '../Pages/UserProfilePage';
 
+import { UserService } from '../../services';
+
 import { NotifyContainer } from '../NotifyManager';
 import LogOut from '../LogOut';
 import { setUserData } from '../../actions/user.action';
@@ -19,9 +21,20 @@ import './App.css';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 
 class App extends Component {
-  render() {
-    const { isAuthenticated } = this.props;
 
+  userService = new UserService;
+  
+  componentDidMount = () => {
+    const { authReducer } = this.props;
+    const { setUserData } = this.props;
+    this.userService.getUserById(authReducer.user.userId).then(({ data }) => {
+      setUserData({
+        userData: data.result
+      });
+    });
+  }
+
+  render() {
     return (
       <BrowserRouter>
         <Navigation />
