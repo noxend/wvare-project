@@ -108,8 +108,8 @@ class UserPosts extends Component {
                         {imageSrc ? (
                           <img
                             src={`/uploads/images/users/${imageSrc.path}`}
-                            width="26px"
-                            height="26px"
+                            width="100%"
+                            height="100%"
                             alt=""
                           />
                         ) : (

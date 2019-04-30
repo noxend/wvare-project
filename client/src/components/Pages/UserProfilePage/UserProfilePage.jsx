@@ -6,6 +6,7 @@ import { UserService, PostService } from '../../../services';
 import UserProfileHeader from '../../UserProfileHeader';
 import UserPosts from '../../UserPosts';
 import LineLoader from '../../LineLoader';
+import UserFriends from '../../UserFriends';
 
 class UserProfilePage extends Component {
   userService = new UserService();
@@ -16,6 +17,7 @@ class UserProfilePage extends Component {
     imageHeaderData: {},
     userImage: {},
     posts: [],
+    friends: [],
     isOwner: false,
     isUserDataLoaded: false,
     isUsersPostsLoaded: false
@@ -82,6 +84,15 @@ class UserProfilePage extends Component {
       });
 
     this.userService
+      .getUserFriends(username)
+      .then(({ data }) => {
+        this.setState({ friends: data.result });
+      })
+      .catch(err => {
+        throw new Error(err);
+      });
+
+    this.userService
       .getUserByUsername(username)
       .then(({ data: { result } }) => {
         this.setState(
@@ -113,6 +124,8 @@ class UserProfilePage extends Component {
   };
 
   render() {
+    const { username } = this.props.match.params;
+
     const {
       userData: { login, color = '#c62828' },
       isOwner,
@@ -120,7 +133,8 @@ class UserProfilePage extends Component {
       isUserDataLoaded,
       isUsersPostsLoaded,
       posts,
-      userImage
+      userImage,
+      friends
     } = this.state;
 
     if (!isUserDataLoaded || !isUsersPostsLoaded) {
@@ -145,7 +159,10 @@ class UserProfilePage extends Component {
             <div className="container">
               <div className="body-profile" style={{ marginTop: '24px' }}>
                 <div className="row">
-                  <div className="col col-lg-8 col-sm-12">
+                  <div className="col-lg-4 col-sm-12">
+                    <UserFriends friends={friends} curentUser={username} />
+                  </div>
+                  <div className="col-lg-8 col-sm-12">
                     {posts.map(
                       ({
                         _id,

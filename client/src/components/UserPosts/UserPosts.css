@@ -111,11 +111,17 @@
   margin-left: -8px;
 }
 
+.post__likes_friends img {
+  position: absolute;
+}
+
 .post__likes_friends li {
+  position: relative;
+  box-sizing: content-box;
   border: 2px solid #fff;
   overflow: hidden;
   border-radius: 50%;
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
 }
 

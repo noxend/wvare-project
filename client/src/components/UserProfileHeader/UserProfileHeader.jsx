@@ -75,7 +75,7 @@ class UserProfileHeader extends Component {
         </div>
         <div className="profile-header__bottom">
           <div className="row">
-            <div className="col col-lg-8 col-md-12">
+            <div className="col-lg-8 col-md-12">
               <div className="profile-header__user-data">
                 <div className="profile-header__name-nickname-status">
                   <div className="profile-header__name-nickname">
@@ -90,7 +90,7 @@ class UserProfileHeader extends Component {
                 </div>
               </div>
             </div>
-            <div className="col col-lg-4 col-md-12">
+            <div className="col-lg-4 col-md-12">
               <div className="profile-header__rigth-side">
                 <button className="w-btn w-btn-green">
                   <i className="fas fa-user" /> Follow

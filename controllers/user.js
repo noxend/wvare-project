@@ -1,9 +1,10 @@
-const User = require('../models/User');
 const jimp = require('jimp');
 const path = require('path');
 const fs = require('fs-extra');
 
 const Upload = require('../models/Upload');
+const Relationship = require('../models/Relationship');
+const User = require('../models/User');
 
 const create = (req, res) => {
   res.json({ msg: 'POST' });
@@ -150,6 +151,34 @@ const uploadImageHeader = async (req, res) => {
   }
 };
 
+const userRelations = async (req, res) => {
+  const relationship = new Relationship({
+    firstUser: '5c7928b5ba9c314da4250566',
+    secondUser: '5cadc90e7510ad29a82e21eb',
+    status: 1,
+    actionUser: '5c7928b5ba9c314da4250566'
+  });
+  await relationship.save();
+  res.json({ relationship });
+};
+
+const getFriends = async (req, res) => {
+  const { username } = req.params;
+
+  const { _id } = await User.findOne({ login: username });
+
+  const result = await Relationship.find({
+    $or: [{ firstUser: _id }, { secondUser: _id }],
+    status: 1
+  })
+    .populate({ path: 'firstUser', populate: { path: 'imageSrc' } })
+    .populate({ path: 'firstUser', populate: { path: 'profileImageHeader' } })
+    .populate({ path: 'secondUser', populate: { path: 'imageSrc' } })
+    .populate({ path: 'secondUser', populate: { path: 'profileImageHeader' } })
+
+  res.json({ result });
+};
+
 const remove = (req, res) => {
   res.json({ msg: 'DELETE' });
 };
@@ -166,5 +195,7 @@ module.exports = {
   update,
   getUserByUsername,
   uploadImageHeader,
-  uploadUserImage
+  uploadUserImage,
+  userRelations,
+  getFriends
 };

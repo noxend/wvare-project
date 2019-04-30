@@ -1,30 +1,33 @@
-import axios from "axios";
+import axios from 'axios';
 
 export default class UserService {
-
-  getUserById = async (id) => {
+  getUserById = async id => {
     const result = await axios.get(`/api/user/${id}`);
     return result;
-  }
+  };
 
-  getUserByUsername = async (username) => {
+  getUserFriends = async (username) => {
+    const result = await axios.get(`/api/user/user-friends/${username}`);
+    return result;
+  };
+
+  getUserByUsername = async username => {
     const result = await axios.get(`/api/user/by-username/${username}`);
     return result;
-  }
+  };
 
-  uploadHeaderImage = async (data) => {
+  uploadHeaderImage = async data => {
     let progress = null;
     const result = await axios.post('/api/user/upload-image-header', data, {
       onUploadProgress: e => {
-        process = Math.round(e.loaded / e.total * 100);
+        process = Math.round((e.loaded / e.total) * 100);
       }
     });
-    return {result, progress};
-  }
+    return { result, progress };
+  };
 
-  uploadUserImage = async (data) => {
+  uploadUserImage = async data => {
     const result = await axios.post('/api/user/upload-user-image', data);
     return result;
-  }
-
+  };
 }
